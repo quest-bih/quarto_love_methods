@@ -34,7 +34,7 @@ Starting from this notebook as a template we will learn how to populate a Quarto
 
 In each of the following sections you will find some placeholder content that you can replace or blank spaces that look like this one \[\_\_\_here\_\_\_\], that you can populate with content of your own.
 
-It is recommended that you use RStudio to work through this file. To work on your own copy of the project, you can clone it from this repository. There are links to different useful resources throughout the notebook. Ideally you should bookmark them and return to them after the workshop, if you want to dive deeper into the topic.
+It is recommended that you use RStudio to work through this file. To work on your own copy of the project, you can clone it from this repository: <https://github.com/quest-bih/quarto_love_methods>. There are links to different useful resources throughout the notebook. Ideally you should bookmark them and return to them after the workshop, if you want to dive deeper into the topic.
 
 ```{r}
 #| include: false
@@ -163,9 +163,9 @@ For simple tables, you can insert a table and dimension it according to your nee
 
 ### Experimental design (5 min)
 
-This is another one of the essential pieces of information that belongs in the Methods section. One useful way of communicating this is with a Directed Acyclic Graph (DAG). Here we use an example from a previous publication [@lederer2019], which we replicated with the R library `ggdag` [@ggdag]. We can upload the DAG as an image file, as in @fig-dag-image. To enable cross-referencing figures, we gave the figure a unique ID `#fig-dag-image` (Figure IDs have their own prefix `fig-`).
+Experimental design is another one of the essential pieces of information that belongs in the Methods section. One useful way of communicating this is with a Directed Acyclic Graph (DAG). Here we use an example from a previous publication [@lederer2019], which we replicated with the R library `ggdag` [@ggdag]. We can upload the DAG as an image file, as in @fig-dag-image. To enable cross-referencing figures, we gave the figure a unique ID `#fig-dag-image` (Figure IDs have their own prefix `fig-`).
 
-[![Directed Acyclic Graph reproduced from a previously published study.](inst/extdata/fig-dag-1.png){#fig-dag-image alt="Directed Acyclic Graph reproduced from a previously published study."}](https://dagitty.net/learn/index.html)
+[![Directed Acyclic Graph reproduced from a previously published study.](inst/extdata/fig-dag-1.png){#fig-dag-image alt="Directed Acyclic Graph reproduced from a previously published study." fig-alt="The image shows three black circles in a triangular formation and connected with arrows. The top two circles are labeled \"Exercise\" and \"Smoking\" and the bottom circle is labeled \"Lung Cancer\". An arrow points from \"Exercise\" to \"Lung Cancer\" and two arrows point from \"Smoking\" to the other two circles, \"Exercise\" and \"Lung Cancer\"."}](https://dagitty.net/learn/index.html)
 
 In this experimental design smoking is a confounder, while exercise is the exposure and the incidence of lung cancer is the primary outcome (@fig-dag-image). You can learn more about DAGs at <https://dagitty.net/learn/index.html> [@dagitty].
 
@@ -181,7 +181,7 @@ Insert a figure from an image file, give it a caption and a unique ID, and link 
 
 ### Inclusion and exclusion criteria (20 min)
 
-![This flowchart was taken from a published protocol, uploaded once again as a simple image.](inst/extdata/flowchart.jpg){#fig-flowchart fig-align="left"}
+![This flowchart was taken from a published protocol, uploaded once again as a simple image.](inst/extdata/flowchart.jpg){#fig-flowchart fig-alt="An image with the title \"Example 1 - clinical study\" shows four rectangles with text, some of which are connected with arrows. Three of the boxes are vertically aligned, with the boxes positioned higher being connected with downward arrows to the boxes below. The topmost box is labelled \"Women with live or stillbirth from 1976 to 2010 sent to US Renal Data System (n=34,581)\". The box below it is labelled \"Potential end-stage renal disease cases (n=48)\". The arrow going downwards from this last box is split to the right from the three vertically aligned boxes and points to another box labelled \"Excluded (n=5) End-stage renal disease prior to any pregnancy (n = 3) End-stage renal disease during any pregnancy (n=2)\". The lowest box from the three vertically aligned boxes is labelled \"End-stage renal disease cases (n=43)\". In the lowest right corner the image contains the following text \"Flow chart was modified from DOI: 10.1053/j.ajkd.2016.07.034\"." fig-align="left"}
 
 It is easy to insert images as figures, but if something changes in our experimental design we would need to remake the whole figure. Let us recreate this figure taken from @kattah2017 with code instead, using the `flowchart` library [@flowchart]. You don't need to understand all of the code below right away. The main point is that a flowchart is generated procedurally, and, like with our inline code expressions, the whole figure will be updated (when re-rendering) if we update the main source (@fig-flowchart-calculated).
 
