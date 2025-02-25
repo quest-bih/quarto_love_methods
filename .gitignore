@@ -47,3 +47,8 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# quarto intermediate rendered files
+/.quarto/
+_manuscript/
+_freeze/

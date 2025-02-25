@@ -1,0 +1,137 @@
+---
+title: "Heavy_computations"
+format:
+  html:
+    fig-width: 9
+    fig-height: 5
+---
+
+```{r}
+library(tidyverse)
+library(flowchart)
+library(glue)
+library(pwrss)
+library(ggdag)
+```
+
+Here we can place some heavy computations that should not slow down the rendering of the main document. We can also place solutions to the coding exercises from the main notebook.
+
+```{r}
+#| label: fig-dag
+#| fig-cap: Directed Acyclic Graph reproduced from a previously published study. 
+
+
+smoking_ca_dag <- dagify(
+  lungcancer ~ exercise + smoking,
+  exercise ~ smoking,
+  labels = c(
+    "lungcancer" = "Lung\n Cancer",
+    "smoking" = "Smoking",
+    "exercise" = "Exercise"
+  ),
+  # latent = "smoking",
+  exposure = "exercise",
+  outcome = "lungcancer"
+)
+
+ggdag(smoking_ca_dag, text = FALSE, use_labels = "label") +
+  theme_void()
+# 
+# ggdag_paths(smoking_ca_dag, text = FALSE, use_labels = "label", shadow = TRUE) +
+#   theme_void()
+
+# ggdag_adjustment_set(smoking_ca_dag, text = FALSE, use_labels = "label", shadow = TRUE) +
+#   theme_void()
+```
+
+```{r}
+#| label: fig-dagadjustment
+#| fig-cap: The adjustment set for the Directed Acyclic Graph reproduced from a previously published study. 
+
+ggdag_adjustment_set(smoking_ca_dag, text = FALSE, use_labels = "label", shadow = TRUE) +
+  theme_void()
+```
+
+To learn more about adjustment sets, see @ggdag.
+
+We can also make an inclusion/exclusion flowchart.
+
+```{r}
+#| label: fig-flowchart-embeded
+#| fig-cap: Flowchart created with the `flowchart` library, but this time saved in another notebook.
+#| fig-width: 9
+
+n_total <- 34581
+n_potential <- 48
+n_prior_pregnancy <- 3
+n_pregnancy <- 2
+n_excluded <- n_prior_pregnancy + n_pregnancy
+n_included <- n_potential - n_excluded
+
+ids_potential <- sample(n_total, n_potential)  
+ids_excluded <- sample(ids_potential, n_excluded)
+ids_pregnancy <- sample(ids_excluded, n_pregnancy)
+ids_prior_pregnancy <- ids_excluded[!ids_excluded %in% ids_pregnancy]
+  
+all_women <- tibble(ids_women = 1:n_total) |> 
+  mutate(potential = ids_women %in% ids_potential,
+         excluded = ids_women %in% ids_excluded,
+         prior_pregnancy = ids_women %in% ids_prior_pregnancy,
+         pregnancy = ids_women %in% ids_pregnancy,
+         included = ids_women %in% ids_potential & !ids_women %in% ids_excluded)
+
+text_pattern <- "{label}\n(n = {format(n, big.mark=',')})"
+
+all_women |> 
+  as_fc(label = "Women with live or stillbirth from 1976 to 2010\nsent to US Rental Data Sysem",
+        text_pattern = text_pattern, text_fs = 12) |> 
+  fc_filter(potential, label = "Potential end stage renal disease cases", text_pattern = text_pattern, text_fs = 12) |> 
+  fc_filter(included, label = "End stage renal disease cases", text_pattern = text_pattern, show_exc = TRUE, text_fs = 12) |> 
+  fc_modify(
+    ~ . |> 
+      mutate(
+        text = ifelse(id == 4, str_glue("Excluded (n = {n_excluded})\nEnd stage renal disease prior to any pregnancy (n = {sum(all_women$prior_pregnancy)})\nEnd stage renal disease during any pregnancy (n = {sum(all_women$pregnancy)})"), text),
+        x = case_when(
+          id == 4 ~ 0.81,
+          .default = x
+        ),
+        text_fs = case_when(
+          id == 4 ~ 9,
+          .default = 11
+        ),
+        # just = "left"
+      )
+  ) |> 
+  fc_draw(box_corners = "sharp")
+```
+
+## Solutions
+
+::: {.callout-tip collapse="true"}
+#### Task II
+
+1.  
+
+```{r}
+power_calculation <- pwrss.t.2means(mu1 = 30, mu2 = 25, sd1 = 11, sd2 = 8, kappa = 1, 
+               power = .80, alpha = 0.05,
+               alternative = "not equal")
+```
+
+We used n = `r power_calculation$n[1]` wild type and n = `r power_calculation$n[1]` knockout mice.
+
+2.  The total sample size was n = `r sum(power_calculation$n)`.
+3.  
+
+```{r}
+n_subsample <- 20
+set.seed(42)
+iris_random <- iris |>
+  slice_sample(n = n_subsample) |> 
+  count(Species) |> 
+  pivot_wider(names_from = Species, values_from = n)
+
+```
+
+There were n = `r iris_random$setosa` *I. setosa*, n = `r iris_random$virginica` *I. virginica*, n = `r iris_random$versicolor` *I. versicolor* in this random subsample of n = `r n_subsample` plants.
+:::

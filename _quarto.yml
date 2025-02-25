@@ -1,0 +1,27 @@
+project:
+  type: manuscript
+
+manuscript:
+  article: index.qmd
+
+format:
+  html:
+    comments:
+      hypothesis: true
+    fig-width: 8
+    fig-height: 6
+  docx: default
+  jats: default
+
+  # (other formats)
+  plos-pdf:
+    fig-pos: "H"
+    fig-width: 7
+    fig-height: 5
+    keep-tex: true
+
+execute:
+  freeze: auto
+
+editor: visual
+

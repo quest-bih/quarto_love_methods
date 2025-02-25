@@ -1,0 +1,269 @@
+---
+title: My first Quarto Manuscript
+authors:
+  - name: Vladislav Nachev
+    orcid: 0000-0003-0521-6153
+    affiliation: QUEST Center for Responsible Research, Berlin Institute of Health (BIH) at Charité–Universitätsmedizin Berlin, Berlin, Germany
+    roles: 
+      - Writing-original draft
+      - Conceptualization
+      - Software
+    corresponding: true
+    
+keywords: Any, relevant, topic, *Genus*
+bibliography: references.bib
+---
+
+## Introduction
+
+Starting from this notebook as a template we will learn how to populate a Quarto notebook with:
+
+-   citations
+
+-   hyperlinks
+
+-   inline code expressions
+
+-   tables
+
+-   cross-references
+
+-   figures
+
+-   embeded figures from a different notebook
+
+In each of the following sections you will find some placeholder content that you can replace or blank spaces that look like this one \[\_\_\_here\_\_\_\], that you can populate with content of your own.
+
+It is recommended that you use RStudio to work through this file. To work on your own copy of the project, you can clone it from this repository. There are links to different useful resources throughout the notebook. Ideally you should bookmark them and return to them after the workshop, if you want to dive deeper into the topic.
+
+```{r}
+#| include: false
+library(tidyverse) 
+library(flowchart)
+library(pwrss)
+library(ggdag)
+```
+
+## Materials and Methods
+
+### Experimental subjects (10 min)
+
+When writing about your experimental subjects make sure to follow the reporting guidelines, e.g. ARRIVE, CONSORT, PRISMA, etc., that are suitable for your study. We are not going to go into the content of the guidelines, but use them as an example for adding citations to your manuscript. You can insert anything in Quarto by pressing `Ctrl+/` or `Cmd+/` and then typing the keyword for the content you want to insert, selecting your choice from the options and pressing `TAB`. If you choose to add a citation, you have the option to find the relevant citation from DOI, via crossref, or from your [Zotero](https://www.zotero.org/) library, among others. Once selected you can insert a citation in the text and add it to your `references.bib` file that contains your bibliography. A **References** section is automatically added at the end of the notebook when rendering. You can add [hyperlinks](https://quarto.org/docs/authoring/citations.html) to your text as well, but these will not be added to the references.
+
+------------------------------------------------------------------------
+
+#### Task I:
+
+1.  Add a reference to the reporting guideline suitable to your project
+
+    \[\_\_\_here\_\_\_\]
+
+2.  Add an in-text citation
+
+    \[\_\_\_here\_\_\_\]
+
+3.  Add a citation to three R packages (e.g. `randomizr`, `flowchart`, `ggdag)`
+
+    \[\_\_\_here\_\_\_\]
+
+4.  Add a hyperlink to Quarto's documentation on Visual Editing in RStudio (you can find out the link with a search engine)
+
+    \[\_\_\_here\_\_\_\]
+
+------------------------------------------------------------------------
+
+### Sample Size and Power Analysis (20 min)
+
+One of the essential pieces of information in a scientific study is the sample size and it is usually reported up front, for example:
+
+"122 female Sprague Dawley rats were unilaterally lesioned using 6-OHDA HBr and split into balanced experimental groups based on the severity of motor impairment following lesion as evaluated by amphetamine-induced rotations, cylinder, vibrissae and stepping tests." [@breger2017]
+
+You can write this part of the manuscript before performing your experiments, but due to changes in the design you may need to update the numbers. It is not too bad if you mention this at a single point in your manuscript. However, sample sizes are relevant for the methods, but also for figures, tables and other results, and usually appear in several places in the text. It is a hassle and a risk to introduce errors in your manuscript if you had to hunt for the references to data-derived numbers in your text to replace them by hand. Instead, all data-linked numbers should ideally be reproducibly derived from the data. Here, as a a step in that direction, we can save the sample size number inside a code block and then refer to it throughout the text. At least this way, there is only a single reference that needs to be updated.
+
+```{r}
+#| echo: true
+total_n <- 122
+```
+
+Now that we have our sample size saved as a variable, we can, for example, write that all `r total_n` rats were \~7 weeks old at the beginning of the experiment. The number `r total_n` in the previous sentence (and this one too!) is the output from an inline code expression linked to the variable `total_n` . (Inline code expressions are surrounded by back-ticks "\`" and start with the name of the programming language, in this case r.) By changing the value inside the code chunk, we can update the displayed values in all the corresponding places in the text, where the numbers were replaced with inline code expressions. Once you have your actual data you can replace the hard-coded variable `total_n`, for example with an expression that calculates the number of rows of a csv table with your results.
+
+The appropriate sample size should be determined based on a power calculation for the chosen experimental design. For simplicity, let us assume we want to compare the weights of knockout mice versus wild type mice using a simple t-test. A theoretical power calculation, using the library `pwrss` [@pwrss], is shown below. (In a real application the user should choose the appropriate specifications for their use case.)
+
+```{r}
+#| echo: true
+power_calculation <- pwrss.t.2means(mu1 = 30, mu2 = 25,
+                                    sd1 = 12, sd2 = 8, kappa = 1, power = .80,
+                                    alpha = 0.05, alternative = "not equal")
+```
+
+------------------------------------------------------------------------
+
+#### Task II:
+
+The results from the power analysis are stored in the variable `power_calculation`. Observe its structure and deduce which element stores the recommended group size.
+
+1.  Write a sentence about the size of each group, using inline code expressions referring to the correct element of `power_calculation`
+
+    \[\_\_\_here\_\_\_\]
+
+2.  Write a sentence about the total sample size (both groups combined), using an inline code expression
+
+    \[\_\_\_here\_\_\_\]
+
+3.  Make a code chunk that takes a random subsample from the `iris` data set included with R. Using inline code expressions report the sample sizes for each species in your subsample
+
+    \[\_\_\_here\_\_\_\]
+
+4.  Play around with the parameters in the power calculation or change the seed parameter in your randomization and observe how the results change when re-rendering your notebook
+
+------------------------------------------------------------------------
+
+### Key Resource Table (20 min)
+
+Some journals require that a key resource table is included in the manuscript. An example is given below in @tbl-resources. In this last sentence, the reference to this table was made using a cross-reference, where rather than typing out the name of the table ("Table 1") a cross-reference was inserted, to the unique table id, which is \`#tbl-resources\`. The `tbl-` prefix is important because it allows Quarto to keep track of the running number of the table objects. Code chunks and divs, regardless of content and output (tables, figures, etc.), can be assigned IDs like this, which enable cross-referencing throughout the notebook and even between notebooks.
+
+::: {#tbl-resources tbl-colwidths="[45,45,45,55,45]"}
++------------------------------------+-----------------------------------------------------------------------------------------+----------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------+
+| Reagent type (species) or resource | Designation                                                                             | Source or\                                                     | Identifiers                                                                                                                                                                                                                                                                                                                            | Additional information |
+|                                    |                                                                                         | reference                                                      |                                                                                                                                                                                                                                                                                                                                        |                        |
++====================================+=========================================================================================+================================================================+========================================================================================================================================================================================================================================================================================================================================+========================+
+| Gene (*Xenopus laevis*)            | aRCA3                                                                                   | NCBI                                                           | NCBI: XM_018246573.1                                                                                                                                                                                                                                                                                                                   |                        |
++------------------------------------+-----------------------------------------------------------------------------------------+----------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------+
+| Recombinant DNA reagent            | pFA6a pH-tdGFP                                                                          | PMID: [27324986](https://www.ncbi.nlm.nih.gov/pubmed/27324986) | RRID: [Addgene_74322](https://identifiers.org/RRID/RRID:Addgene_74322)                                                                                                                                                                                                                                                                 |                        |
++------------------------------------+-----------------------------------------------------------------------------------------+----------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------+
+| Software, algorithm                | R 4.4.2                                                                                 | R Core Team                                                    | RRID: [001905](https://identifiers.org/RRID/RRID:SCR_001905)                                                                                                                                                                                                                                                                           |                        |
++------------------------------------+-----------------------------------------------------------------------------------------+----------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------+
+| Software, algorithm                | XenLoom (beta): Looming Stimulus Presentation and Tracking of *Xenopus laevis* tadpoles | This paper                                                     | [github.com/](https://github.com/tonykylim/XenLoom_beta)[\                                                                                                                                                                                                                                                                             | @lim2021               |
+|                                    |                                                                                         |                                                                | ](#0)[tonykylim/](https://github.com/tonykylim/XenLoom_beta)[\                                                                                                                                                                                                                                                                         |                        |
+|                                    |                                                                                         |                                                                | ](#0)[XenLoom_beta](https://github.com/tonykylim/XenLoom_beta);                                                                                                                                                                                                                                                                        |                        |
+|                                    |                                                                                         |                                                                |                                                                                                                                                                                                                                                                                                                                        |                        |
+|                                    |                                                                                         |                                                                | \                                                                                                                                                                                                                                                                                                                                      |                        |
+|                                    |                                                                                         |                                                                | copy archived at [swh:1:rev:b487791d 1d91a5950eeb fd1e7640e 0c3db761cf5](https://archive.softwareheritage.org/swh:1:dir:5ebc466dcffd35c58c2e2c720830eaa68980dd62;origin=https://github.com/tonykylim/XenLoom_beta;visit=swh:1:snp:deb827da14c7221a51286a4c713acea39742b22f;anchor=swh:1:rev:b487791d1d91a5950eebfd1e7640e0c3db761cf5/) |                        |
++------------------------------------+-----------------------------------------------------------------------------------------+----------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------+
+
+Key Resources Table
+:::
+
+For simple tables, you can insert a table and dimension it according to your needs. For tables that need to be more finely tuned, use a cross-reference div as in @tbl-resources above (switch to "Source" view and examine the code). You can read more about cross-reference divs [here](https://quarto.org/docs/authoring/cross-references-divs.html). Finally, the most powerful way to generate a table, especially a result table, is by generating it inside a code chunk using libraries such as `gt` or `flextable` [@gt; @flextable], but such tables are beyond the scope of this workshop.
+
+------------------------------------------------------------------------
+
+#### Task III:
+
+1.  Practice creating your own version of the table above (or use your own content), populating it with text, links, and citations. Use the method for table creation you feel most comfortable with (the simplest, if you are unsure). Make a caption and write a sentence with a cross-reference to the newly created table (make sure to give it a unique ID first!).
+
+    \[\_\_\_here\_\_\_\]
+
+2.  Create a second table and insert a cross-reference to the first table inside any of its cells.
+
+    \[\_\_\_here\_\_\_\]
+
+------------------------------------------------------------------------
+
+### Experimental design (5 min)
+
+This is another one of the essential pieces of information that belongs in the Methods section. One useful way of communicating this is with a Directed Acyclic Graph (DAG). Here we use an example from a previous publication [@lederer2019], which we replicated with the R library `ggdag` [@ggdag]. We can upload the DAG as an image file, as in @fig-dag-image. To enable cross-referencing figures, we gave the figure a unique ID `#fig-dag-image` (Figure IDs have their own prefix `fig-`).
+
+[![Directed Acyclic Graph reproduced from a previously published study.](_manuscript/notebooks/Heavy_computations_files/figure-html/fig-dag-1.png){#fig-dag-image alt="Directed Acyclic Graph reproduced from a previously published study."}](https://dagitty.net/learn/index.html)
+
+In this experimental design smoking is a confounder, while exercise is the exposure and the incidence of lung cancer is the primary outcome (@fig-dag-image). You can learn more about DAGs at <https://dagitty.net/learn/index.html> [@dagitty].
+
+------------------------------------------------------------------------
+
+#### Task IV:
+
+Insert a figure from an image file, give it a caption and a unique ID, and link it to a relevant website. Finally, write a sentence that cross-references the new figure. If you don't have an image file of your own, feel free to insert an image directly from the web, for example, [this one](https://arriveguidelines.org/sites/arrive/files/inline-images/E%20and%20E_subitem1a%20-%20example%202.svg).
+
+\[\_\_\_here\_\_\_\]
+
+------------------------------------------------------------------------
+
+### Inclusion and exclusion criteria (20 min)
+
+![This flowchart was taken from a published protocol, uploaded once again as a simple image.](inst/extdata/flowchart.jpg){#fig-flowchart fig-align="left"}
+
+It is easy to insert images as figures, but if something changes in our experimental design we would need to remake the whole figure. Let us recreate this figure taken from @kattah2017 with code instead, using the `flowchart` library [@flowchart]. You don't need to understand all of the code below right away. The main point is that a flowchart is generated procedurally, and, like with our inline code expressions, the whole figure will be updated (when re-rendering) if we update the main source (@fig-flowchart-calculated).
+
+```{r}
+#| label: fig-flowchart-calculated
+#| fig-cap: Flowchart created with the `flowchart` library, but this time saved in another notebook.
+#| fig-width: 9
+
+n_total <- 34581
+n_potential <- 48
+n_prior_pregnancy <- 3
+n_pregnancy <- 2
+n_excluded <- n_prior_pregnancy + n_pregnancy
+n_included <- n_potential - n_excluded
+
+ids_potential <- sample(n_total, n_potential)  
+ids_excluded <- sample(ids_potential, n_excluded)
+ids_pregnancy <- sample(ids_excluded, n_pregnancy)
+ids_prior_pregnancy <- ids_excluded[!ids_excluded %in% ids_pregnancy]
+  
+all_women <- tibble(ids_women = 1:n_total) |> 
+  mutate(potential = ids_women %in% ids_potential,
+         excluded = ids_women %in% ids_excluded,
+         prior_pregnancy = ids_women %in% ids_prior_pregnancy,
+         pregnancy = ids_women %in% ids_pregnancy,
+         included = ids_women %in% ids_potential & !ids_women %in% ids_excluded)
+
+text_pattern <- "{label}\n(n = {format(n, big.mark=',')})"
+
+all_women |> 
+  as_fc(label = "Women with live or stillbirth from 1976 to 2010\nsent to US Rental Data Sysem",
+        text_pattern = text_pattern, text_fs = 12) |> 
+  fc_filter(potential, label = "Potential end stage renal disease cases", text_pattern = text_pattern, text_fs = 12) |> 
+  fc_filter(included, label = "End stage renal disease cases", text_pattern = text_pattern, show_exc = TRUE, text_fs = 12) |> 
+  fc_modify(
+    ~ . |> 
+      mutate(
+        text = ifelse(id == 4, str_glue("Excluded (n = {n_excluded})\nEnd stage renal disease prior to any pregnancy (n = {sum(all_women$prior_pregnancy)})\nEnd stage renal disease during any pregnancy (n = {sum(all_women$pregnancy)})"), text),
+        x = case_when(
+          id == 4 ~ 0.81,
+          .default = x
+        ),
+        text_fs = case_when(
+          id == 4 ~ 9,
+          .default = 11
+        ),
+        # just = "left"
+      )
+  ) |> 
+  fc_draw(box_corners = "sharp")
+```
+
+An even better idea, especially if producing a computationally expensive figure or table, is to generate it once in a separate notebook and embed it here, in the main document, like we did with @fig-flowchart-embeded. The code for generating this figure is found inside a separate notebook, `Heavy_computations.qmd`. This way work generated by coders can be insulated from work on the narrative in the main notebook, lowering the adoption barrier for non-coders. Embedding from different sources like Jupyter, Quarto or RMarkdown notebooks in also possible.
+
+{{< embed notebooks/Heavy_computations.qmd#fig-flowchart-embeded >}}
+
+------------------------------------------------------------------------
+
+#### Task V:
+
+1.  Create a a new code chunk and copy-paste the contents from `fig-flowchart-calculated` above. Don't forget to give this new chunk a new name! Then change the appropriate numbers to have 63 potential cases and 10 exclusions.
+
+    \[\_\_\_here\_\_\_\]
+
+2.  Cut and paste the new chunk to the end of the \`Heavy_computations.qmd\` notebook. Then in the main notebook embed the figure by inserting a shortcode embedding statement.
+
+    \[\_\_\_here\_\_\_\]
+
+------------------------------------------------------------------------
+
+### Conclusion
+
+Thank you for participating in this workshop. I encourage you to keep practicing and advancing your skills and to give Quarto a try when writing your next manuscript. If you have questions and feedback about the workshop do not hesitate to contact the instructor.
+
+------------------------------------------------------------------------
+
+#### OPTIONAL Task VI:
+
+1.  If you are a confident R programmer and still need a challenge, create a new flowchart in the `Heavy_computations.qmd` notebook and embed it below. The flowchart should depict the following scenario:\
+    You ordered 30 mice and randomly selected 24 to train on a cognitive task. From these 24 you had to exclude 4 that did not reach a pre-selected training criterion and another 3 that did not generate sufficient number of choices to be included in your main analysis.
+
+    \[\_\_\_here\_\_\_\]
+
+------------------------------------------------------------------------
+
+### 
