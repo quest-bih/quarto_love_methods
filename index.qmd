@@ -188,7 +188,7 @@ It is easy to insert images as figures, but if something changes in our experime
 ```{r}
 #| include: true
 #| label: fig-flowchart-calculated
-#| fig-cap: Flowchart created with the `flowchart` library, but this time saved in another notebook.
+#| fig-cap: Flowchart created with the `flowchart` library.
 
 n_total <- 34581
 n_potential <- 48
