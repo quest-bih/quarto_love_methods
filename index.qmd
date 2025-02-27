@@ -121,7 +121,7 @@ The results from the power analysis are stored in the variable `power_calculatio
 
 ### Key Resource Table (20 min)
 
-Some journals require that a key resource table is included in the manuscript. An example is given below in @tbl-resources. In this last sentence, the reference to this table was made using a cross-reference, where rather than typing out the name of the table ("Table 1") a cross-reference was inserted, to the unique table id, which is \`#tbl-resources\`. The `tbl-` prefix is important because it allows Quarto to keep track of the running number of the table objects. Code chunks and divs, regardless of content and output (tables, figures, etc.), can be assigned IDs like this, which enable cross-referencing throughout the notebook and even between notebooks.
+Some journals require that a key resource table is included in the manuscript. An example is given below in @tbl-resources. In this last sentence, the reference to this table was made using a cross-reference, where rather than typing out the name of the table ("Table 1") a cross-reference was inserted, to the unique table ID, which is \`#tbl-resources\`. The `tbl-` prefix is important because it allows Quarto to keep track of the running number of the table objects. Code chunks and divs, regardless of content and output (tables, figures, etc.), can be assigned IDs like this, which enable cross-referencing throughout the notebook and even between notebooks.
 
 ::: {#tbl-resources tbl-colwidths="[45,45,45,55,45]"}
 +------------------------------------+-----------------------------------------------------------------------------------------+----------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------+
@@ -145,7 +145,7 @@ Some journals require that a key resource table is included in the manuscript. A
 Key Resources Table
 :::
 
-For simple tables, you can insert a table and dimension it according to your needs. For tables that need to be more finely tuned, use a cross-reference div as in @tbl-resources above (switch to "Source" view and examine the code). You can read more about cross-reference divs [here](https://quarto.org/docs/authoring/cross-references-divs.html). Finally, the most powerful way to generate a table, especially a result table, is by generating it inside a code chunk using libraries such as `gt` or `flextable` [@gt; @flextable], but such tables are beyond the scope of this workshop.
+For simple tables, you can insert a table and dimension it according to your needs. To make a simple table cross-referenceable, add the table ID inside curly brackets on the line with the table caption. For tables that need to be more finely tuned, use a cross-reference div as in @tbl-resources above (switch to "Source" view and examine the code). You can read more about cross-reference divs [here](https://quarto.org/docs/authoring/cross-references-divs.html). Finally, the most powerful way to generate a table, especially a result table, is by generating it inside a code chunk using libraries such as `gt` or `flextable` [@gt; @flextable], but such tables are beyond the scope of this workshop.
 
 ------------------------------------------------------------------------
 
